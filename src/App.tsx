@@ -1,15 +1,22 @@
 import React, {useState} from 'react';
 import {
-    DesktopOutlined,
-    FileOutlined,
-    PieChartOutlined,
-    TeamOutlined,
-    UserOutlined,
+    HomeOutlined,
+    SoundOutlined,
+    SettingOutlined,
 } from '@ant-design/icons';
 import type {MenuProps} from 'antd';
-import {Breadcrumb, Layout, Menu, theme} from 'antd';
+import {Layout, Menu, theme} from 'antd';
+import {
+    useNavigate, Outlet, Route, Routes
+} from "react-router-dom";
+import Settings from "./routes/settings";
+import Root from "./routes/root";
+import Volumes from "./routes/volumes";
 
-const {Header, Content, Footer, Sider} = Layout;
+const {
+    Content,
+    Footer,
+    Sider} = Layout;
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -28,44 +35,53 @@ function getItem(
 }
 
 const items: MenuItem[] = [
-    getItem('Option 1', '1', <PieChartOutlined/>),
-    getItem('Option 2', '2', <DesktopOutlined/>),
-    getItem('User', 'sub1', <UserOutlined/>, [
-        getItem('Tom', '3'),
-        getItem('Bill', '4'),
-        getItem('Alex', '5'),
-    ]),
-    getItem('Team', 'sub2', <TeamOutlined/>, [getItem('Team 1', '6'), getItem('Team 2', '8')]),
-    getItem('Files', '9', <FileOutlined/>),
+    getItem('Home', '/', <HomeOutlined/>),
+    getItem('Player Volumes', '/volumes', <SoundOutlined/>),
+    getItem('Settings', '/settings', <SettingOutlined/>),
 ];
 
-const App: React.FC = () => {
+const MainLayout: React.FC = () => {
     const [collapsed, setCollapsed] = useState(false);
     const {
         token: {colorBgContainer},
     } = theme.useToken();
+    const navigate = useNavigate();
+
+    const handleMenuClick: MenuProps['onClick'] = (e) => {
+        navigate(e.key);
+    }
 
     return (
         <Layout style={{minHeight: '100vh'}}>
             <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
                 <div style={{height: 32, margin: 16, background: 'rgba(255, 255, 255, 0.2)'}}/>
-                <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items}/>
+                <Menu theme="dark" onClick={handleMenuClick} defaultSelectedKeys={['1']} mode="inline" items={items}/>
             </Sider>
             <Layout className="site-layout">
-                <Header style={{padding: 0, background: colorBgContainer}}/>
                 <Content style={{margin: '0 16px'}}>
-                    <Breadcrumb style={{margin: '16px 0'}}>
-                        <Breadcrumb.Item>User</Breadcrumb.Item>
-                        <Breadcrumb.Item>Bill</Breadcrumb.Item>
-                    </Breadcrumb>
                     <div style={{padding: 24, minHeight: 360, background: colorBgContainer}}>
-                        Bill is a cat.
+                        <Outlet/>
                     </div>
                 </Content>
-                <Footer style={{textAlign: 'center'}}>Ant Design ©2023 Created by Ant UED</Footer>
+                <Footer style={{textAlign: 'center'}}>
+                    ARMCO Atlas Dev Team ©2023<br/>
+                    Hacked together by TBSliver and donequis
+                </Footer>
             </Layout>
         </Layout>
     );
 };
+
+const App: React.FC = () => {
+    return (
+        <Routes>
+            <Route path={"/"} element={<MainLayout/>}>
+                <Route path={"volumes"} element={<Volumes/>}/>
+                <Route path={"settings"} element={<Settings/>}/>
+                <Route index element={<Root/>}/>
+            </Route>
+        </Routes>
+    )
+}
 
 export default App;

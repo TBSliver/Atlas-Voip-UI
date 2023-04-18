@@ -2,6 +2,14 @@
 
 VOIP UI
 
+## Useful Links
+
+* https://redux-toolkit.js.org/api/createSlice
+* https://react-redux.js.org/tutorials/quick-start
+* https://redux.js.org/usage/structuring-reducers/immutable-update-patterns
+* https://reactrouter.com/en/main/start/tutorial
+* https://ant.design/components/overview/
+
 ---
 
 # Getting Started with Create React App
